@@ -32,5 +32,21 @@ const catItems = [
     catItems.unshift({cat_id: newId, cat_name, weight, owner, filename, birthdate});
     return {cat_id: newId};
   };
+
+  const putCatById = (id, updatedCat) => {
+    const index = catItems.findIndex((item) => item.cat_id == id);
+    if (index !== -1) {
+      catItems[index] = { ...catItems[index], ...updatedCat };
+      return catItems[index];
+    }
+  };
+
+  const deleteCatById = (id) => {
+    const index = catItems.findIndex((item) => item.cat_id == id);
+    if (index !== -1) {
+      const deleteCat = catItems.splice(index, 1);
+      return deleteCat[0];
+    }
+  };
   
-  export {listAllCats, findCatById, addCat};
+  export {listAllCats, findCatById, addCat, deleteCatById, putCatById};
