@@ -27,7 +27,7 @@ const putCat = (req, res) => {
   // not implemented in this example, this is future homework
   const updateCat = putCatById(req.params.id, req.body);
   if (updateCat) {
-    res.sendStatus(200).json({message: 'Cat item updated.'})
+    res.status(200).json({message: 'Cat item updated.', updateCat})
   } else {
     res.sendStatus(404);
   }
@@ -37,7 +37,7 @@ const deleteCat = (req, res) => {
   // not implemented in this example, this is future homework
   const deleteCat = deleteCatById(req.params.id);
   if (deleteCat) {
-    res.sendStatus(200).json({message: 'Cat item deleted.'});
+    res.status(200).json({message: 'Cat item deleted.'});
   } else {
     res.sendStatus(404);
   }

@@ -45,7 +45,7 @@ const userItems = [
       const index = userItems.findIndex((item) => item.user_id == id);
       if (index !== -1) {
         const deleteUser = userItems.splice(index, 1);
-        return deleteUser[0];
+        return deleteUser[index];
       }
     };
   

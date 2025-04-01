@@ -27,7 +27,7 @@ const putUser = (req, res) => {
     // not implemented in this example, this is future homework
     const updateUser = putUserById(req.params.id, req.body);
     if (updateUser) {
-      res.sendStatus(200).json({message: 'User item updated.'})
+      res.status(200).json({message: 'User item updated.', updateUser})
     } else {
       res.sendStatus(404);
     }
@@ -37,7 +37,7 @@ const deleteUser = (req, res) => {
     // not implemented in this example, this is future homework
     const deleteUser = deleteUserById(req.params.id);
     if (deleteUser) {
-      res.sendStatus(200).json({message: 'User item deleted.'});
+      res.status(200).json({message: 'User item deleted.'});
     } else {
       res.sendStatus(404);
     }

@@ -45,7 +45,7 @@ const catItems = [
     const index = catItems.findIndex((item) => item.cat_id == id);
     if (index !== -1) {
       const deleteCat = catItems.splice(index, 1);
-      return deleteCat[0];
+      return deleteCat[index];
     }
   };
   
