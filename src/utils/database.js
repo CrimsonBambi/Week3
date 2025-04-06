@@ -1,6 +1,7 @@
 import mysql from 'mysql2';
 import 'dotenv/config';  // loads the .env file and makes its variables available in process.env
-const config={
+
+const pool = mysql.createPool ({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -8,13 +9,10 @@ const config={
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-}
+});
 
-console.log("config",config)
-
-
-const pool = mysql.createPool(config);
-
+console.log("config",pool)
 
 const promisePool = pool.promise();
+
 export default promisePool;
