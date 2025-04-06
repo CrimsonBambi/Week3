@@ -1,5 +1,6 @@
 import {addUser, findUserById, listAllUsers, putUserById, deleteUserById} from "../models/user-model.js";
 import {deleteCatsByOwnerId} from "../models/cat-model.js";
+import bcrypt from 'bcrypt';
 
 const getUser = async (req, res) => {
   res.json(await listAllUsers());
@@ -16,6 +17,8 @@ const getUserById = async (req, res) => {
 
 const postUser = async (req, res) => { // in postman, only adding raw data works on this
   try {
+    // modify req.body.password:
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
     console.log('Form Data:', req.body); // Log form data
     const result = await addUser(req.body);
     if (result.user_id) {
