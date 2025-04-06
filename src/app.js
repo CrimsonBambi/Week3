@@ -7,11 +7,10 @@ app.use(express.urlencoded({extended: true}));
 
 app.use('/public', express.static('public'));
 app.use('/uploads', express.static('uploads'));
+app.use('/api/v1', api);
 
 app.get('/', (req, res) => {
     res.send('Welcome to my Rest API')
 });
-
-app.use('/api/v1', api);
 
 export default app;

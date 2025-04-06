@@ -1,4 +1,4 @@
-import {addCat, findCatById, listAllCats, deleteCatById, putCatById} from "../models/cat-model.js";
+import {addCat, findCatById, listAllCats, deleteCatById, putCatById, findCatByOwnerId} from "../models/cat-model.js";
 
 const getCat = async (req, res) => {
   res.json(await listAllCats());
@@ -30,17 +30,26 @@ const postCat = async (req, res) => {
     }
   } catch (error) {
     console.error('Error in postCat:', error.message); // Log the error message
-    res.status(400).json({ message: error.message }); // Return a 400 Bad Request for validation errors
+    res.status(500).json({ message: error.message });
   }
 };
 
 const putCat = async (req, res) => {
-  // not implemented in this example, this is future homework
-  const updateCat = await putCatById(req.params.id, req.body);
-  if (updateCat) {
-    res.status(200).json({message: 'Cat item updated.', updateCat})
-  } else {
-    res.sendStatus(404);
+  try {
+    // Validate input
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: 'No data provided for update.' });
+    }
+
+    const updateCat = await putCatById(req.body, req.params.id);
+    if (updateCat) {
+      res.status(200).json({ message: 'Cat item updated.', updateCat });
+    } else {
+      res.status(404).json({ message: 'Cat not found.' });
+    }
+  } catch (error) {
+    console.error('Error in putCat:', error.message); // Log the error
+    res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -54,4 +63,13 @@ const deleteCat = async (req, res) => {
   }
 };
 
-export {getCat, getCatById, postCat, putCat, deleteCat};
+const getCatByOwnerId = async (req, res) => {
+  const cat = findCatByOwnerId(req.params.id);
+  if (cat) {
+    res.json(await cat);
+  } else {
+    res.sendStatus(404);
+  }
+};
+
+export {getCat, getCatById, postCat, putCat, deleteCat, getCatByOwnerId};

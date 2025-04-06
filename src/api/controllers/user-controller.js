@@ -1,11 +1,12 @@
 import {addUser, findUserById, listAllUsers, putUserById, deleteUserById} from "../models/user-model.js";
+import {deleteCatsByOwnerId} from "../models/cat-model.js";
 
-const getUser = (req, res) => {
-  res.json(listAllUsers());
+const getUser = async (req, res) => {
+  res.json(await listAllUsers());
 };
 
-const getUserById = (req, res) => {
-  const user = findUserById(req.params.id);
+const getUserById = async (req, res) => {
+  const user = await findUserById(req.params.id);
   if (user) {
     res.json(user);
   } else {
@@ -13,19 +14,24 @@ const getUserById = (req, res) => {
   }
 };
 
-const postUser = (req, res) => {
-  const result = addUser(req.body);
-  if (result.user_id) {
-    res.status(201);
-    res.json({message: 'New user added.', result});
-  } else {
-    res.sendStatus(400);
-  }
+const postUser = async (req, res) => { // in postman, only adding raw data works on this
+  try {
+    console.log('Form Data:', req.body); // Log form data
+    const result = await addUser(req.body);
+    if (result.user_id) {
+      res.status(201);
+      res.json({ message: 'New user added.', result });
+    } else {
+      res.status(400).json({ message: 'Failed to add user.' });
+    }
+  } catch (error) {
+    console.error('Error in postUser:', error.message); // Log the error message
+  };
 };
 
-const putUser = (req, res) => {
+const putUser = async (req, res) => {
     // not implemented in this example, this is future homework
-    const updateUser = putUserById(req.params.id, req.body);
+    const updateUser = await putUserById(req.body, req.params.id);
     if (updateUser) {
       res.status(200).json({message: 'User item updated.', updateUser})
     } else {
@@ -33,14 +39,25 @@ const putUser = (req, res) => {
     }
   };
 
-const deleteUser = (req, res) => {
-    // not implemented in this example, this is future homework
-    const deleteUser = deleteUserById(req.params.id);
-    if (deleteUser) {
-      res.status(200).json({message: 'User item deleted.'});
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Delete all cats belonging to the user
+    const deleteCatsResult = await deleteCatsByOwnerId(userId);
+    console.log('Deleted cats:', deleteCatsResult);
+
+    // Delete the user
+    const deleteUserResult = await deleteUserById(userId);
+    if (deleteUserResult) {
+      res.status(200).json({ message: 'User and their cats deleted successfully.' });
     } else {
-      res.sendStatus(404);
+      res.status(404).json({ message: 'User not found.' });
     }
-  };
+  } catch (error) {
+    console.error('Error in deleteUser:', error.message); // Log the error
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};
 
 export {getUser, getUserById, postUser, putUser, deleteUser};
